@@ -1,0 +1,83 @@
+import { createSignal, createContext, useContext } from 'solid-js';
+import { v4 as uuidV4 } from 'uuid';
+
+const BudgetContext = createContext();
+
+type Props = {
+  children?: any;
+};
+
+type Budget = {
+  id?: string;
+  name: string;
+  max: number;
+};
+
+type Expense = {
+  id?: string;
+  budgetId: string;
+  amount: number;
+  description: string;
+};
+
+type State = {
+  budgets: Budget[];
+  expenses: Expense[];
+};
+
+export const BudgetProvider = (props: Props) => {
+  const [state, setState] = createSignal<State>({
+      budgets: [],
+      expenses: [],
+    }),
+    store = [
+      state,
+      {
+        getBudgetExpenses(budgetId: string) {
+          return state().expenses.filter(
+            (expense) => expense.budgetId === budgetId
+          );
+        },
+        addExpense(expense: Expense) {
+          const newExpenses = [
+            ...state().expenses,
+            { ...expense, id: uuidV4() },
+          ];
+          setState({ ...state(), expenses: newExpenses });
+        },
+        addBudget(budget: Budget) {
+          // Insert new budget only if name is not already taken
+          if (state().budgets.find((b) => b.name === budget.name)) {
+            return state();
+          }
+
+          const newBugdets = [...state().budgets, { ...budget, id: uuidV4() }];
+          setState({ ...state(), budgets: newBugdets });
+        },
+        deleteBudget(id: string) {
+          // !TODO: deal with uncategorized expenses
+          setState({
+            ...state(),
+            budgets: state().budgets.filter((budget) => budget.id !== id),
+          });
+        },
+
+        deleteExpense(id: string) {
+          setState({
+            ...state(),
+            expenses: state().expenses.filter((expense) => expense.id !== id),
+          });
+        },
+      },
+    ];
+
+  return (
+    <BudgetContext.Provider value={store}>
+      {props.children}
+    </BudgetContext.Provider>
+  );
+};
+
+export function useBudgetProvider() {
+  return useContext(BudgetContext);
+}
