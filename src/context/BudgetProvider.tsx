@@ -7,7 +7,18 @@ import {
 import { createStore, SetStoreFunction, Store } from 'solid-js/store';
 import { v4 as uuidV4 } from 'uuid';
 
-const BudgetContext = createContext();
+type BudgetStore = [
+  { state: State },
+  {
+    getBudgetExpenses?: (budgetId: string) => void;
+    addExpenses?: (expense: Expense) => void;
+    addBudget?: (budget: Budget) => void;
+    deleteBudget?: (id: string) => void;
+    deleteExpense?: (id: string) => void;
+  }
+];
+
+const BudgetContext = createContext<BudgetStore>();
 
 type Props = {
   children?: any;

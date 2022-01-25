@@ -1,5 +1,6 @@
 import { Button, Form, Modal } from 'solid-bootstrap';
 import { createStore } from 'solid-js/store';
+import { useBudgetProvider } from '../context/BudgetProvider';
 
 type Props = {
   show: boolean;
@@ -11,11 +12,22 @@ type FormType = {
   max: number;
 };
 const AddBudgetModal = ({ show, handleClose }: Props) => {
+  const [
+    state,
+    { getBudgetExpenses, addBudget, addExpense, deleteBudget, deleteExpense },
+  ] = useBudgetProvider();
+
   const [fields, setFields] = createStore<FormType>({ name: '', max: 0 });
 
   const handleSubmit = (ev: any) => {
     ev.preventDefault(); // !FIXME
     console.log(fields.name, fields.max);
+    const budget = {
+      name: fields.name,
+      max: fields.max,
+    };
+    addBudget(budget);
+    handleClose();
   };
 
   return (
