@@ -2,7 +2,7 @@ import { render } from 'solid-js/web';
 
 import './index.css';
 import App from './App';
-import { BudgetProvider } from '../context/BudgetProvider';
+import { BudgetProvider } from './context/BudgetProvider';
 
 render(
   () => (
