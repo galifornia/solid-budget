@@ -11,11 +11,8 @@ type FormType = {
   name: string;
   max: number;
 };
-const AddBudgetModal = ({ show, handleClose }: Props) => {
-  const [
-    state,
-    { getBudgetExpenses, addBudget, addExpense, deleteBudget, deleteExpense },
-  ] = useBudgetProvider();
+const AddBudgetModal = (props: Props) => {
+  const [state, { addBudget }] = useBudgetProvider();
 
   const [fields, setFields] = createStore<FormType>({ name: '', max: 0 });
 
@@ -27,11 +24,11 @@ const AddBudgetModal = ({ show, handleClose }: Props) => {
       max: fields.max,
     };
     addBudget(budget);
-    handleClose();
+    props.handleClose();
   };
 
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={props.show} onHide={props.handleClose}>
       <Form onSubmit={handleSubmit}>
         <Modal.Header closeButton>
           <Modal.Title>New Budget</Modal.Title>

@@ -24,7 +24,7 @@ type Props = {
   children?: any;
 };
 
-type Budget = {
+export type Budget = {
   id?: string;
   name: string;
   max: number;
