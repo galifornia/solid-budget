@@ -6,6 +6,7 @@ type Props = {
   amount: number;
   max: number;
   gray?: boolean;
+  onAddExpenseClick?: () => void;
 };
 
 const getProgressBarVariant = (amount: number, max: number) => {
@@ -46,7 +47,12 @@ const BudgetCard = (props: Props) => {
           direction='horizontal'
           gap={2}
         >
-          <Button variant='outline-primary'>Add expense</Button>
+          <Button
+            variant='outline-primary'
+            onClick={() => props?.onAddExpenseClick()}
+          >
+            Add expense
+          </Button>
           <Button variant='outline-secondary'>View Expense</Button>
         </Stack>
       </Card.Body>

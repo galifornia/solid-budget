@@ -17,13 +17,14 @@ const AddBudgetModal = (props: Props) => {
   const [fields, setFields] = createStore<FormType>({ name: '', max: 0 });
 
   const handleSubmit = (ev: any) => {
-    ev.preventDefault(); // !FIXME
-    console.log(fields.name, fields.max);
+    ev.preventDefault();
+
     const budget = {
       name: fields.name,
-      max: fields.max,
+      max: parseFloat(fields.max),
     };
     addBudget(budget);
+
     props.handleClose();
   };
 

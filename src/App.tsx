@@ -2,12 +2,22 @@ import { Button, Container, Stack } from 'solid-bootstrap';
 import { Component, createEffect, createSignal, For } from 'solid-js';
 
 import AddBudgetModal from './components/AddBudgetModal';
+import AddExpenseModal from './components/AddExpenseModal';
 import BudgetCard from './components/BudgetCard';
-import { Budget, useBudgetProvider } from './context/BudgetProvider';
+import { Budget, Expense, useBudgetProvider } from './context/BudgetProvider';
 
 const App: Component = (props) => {
   const [showAddBudgetModal, setShowAddBudgetModal] = createSignal(false);
+  const [showAddExpenseModal, setShowAddExpenseModal] = createSignal(false);
+  const [addExpenseModalBudgetId, setAddExpenseModalBudgetId] =
+    createSignal('');
+
   const [state, { getBudgetExpenses }] = useBudgetProvider();
+
+  const openAddExpenseModal = (budgetId: string | undefined) => {
+    setShowAddExpenseModal(true);
+    setAddExpenseModalBudgetId(budgetId);
+  };
 
   return (
     <>
@@ -17,7 +27,12 @@ const App: Component = (props) => {
           <Button variant='primary' onClick={() => setShowAddBudgetModal(true)}>
             Add budget
           </Button>
-          <Button variant='outline-primary'>Add Expense</Button>
+          <Button
+            variant='outline-primary'
+            onClick={() => openAddExpenseModal('')}
+          >
+            Add Expense
+          </Button>
         </Stack>
         <div
           className='my-3'
@@ -29,14 +44,21 @@ const App: Component = (props) => {
           }}
         >
           <For each={state.budgets}>
-            {(budget: Budget) => (
-              <BudgetCard
-                name={budget.name}
-                // gray
-                amount={getBudgetExpenses(budget.id)}
-                max={budget.max}
-              />
-            )}
+            {(budget: Budget) => {
+              const amount = getBudgetExpenses(budget.id).reduce(
+                (total: number, expense: Expense) => total + expense.amount,
+                0
+              );
+              return (
+                <BudgetCard
+                  name={budget.name}
+                  // gray
+                  onAddExpenseClick={() => openAddExpenseModal(budget.id)}
+                  amount={amount}
+                  max={budget.max}
+                />
+              );
+            }}
           </For>
         </div>
       </Container>
@@ -44,6 +66,15 @@ const App: Component = (props) => {
       <AddBudgetModal
         show={showAddBudgetModal()}
         handleClose={() => setShowAddBudgetModal(false)}
+      />
+
+      <AddExpenseModal
+        defaultBudgetId={addExpenseModalBudgetId()}
+        show={showAddExpenseModal()}
+        handleClose={() => {
+          setShowAddExpenseModal(false);
+          setAddExpenseModalBudgetId('');
+        }}
       />
     </>
   );

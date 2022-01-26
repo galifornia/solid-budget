@@ -30,7 +30,7 @@ export type Budget = {
   max: number;
 };
 
-type Expense = {
+export type Expense = {
   id?: string;
   budgetId: string;
   amount: number;
