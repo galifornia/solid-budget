@@ -27,6 +27,7 @@ type Props = {
 export type Budget = {
   id?: string;
   name: string;
+  total: number;
   max: number;
 };
 
@@ -66,7 +67,18 @@ export const BudgetProvider = (props: Props) => {
         },
         addExpense(expense: Expense) {
           const newExpenses = [...state.expenses, { ...expense, id: uuidV4() }];
-          setState({ ...state, expenses: newExpenses });
+          const budget = state.budgets.find((v) => v.id === expense.budgetId);
+          if (!budget) return;
+
+          const updatedBudget = {
+            ...budget,
+            total: budget.total + expense.amount,
+          };
+          const filteredBudgets = state.budgets.filter(
+            (b) => b.id !== expense.budgetId
+          );
+          const newBudgets = [...filteredBudgets, updatedBudget];
+          setState({ ...state, budgets: newBudgets, expenses: newExpenses });
         },
         addBudget(budget: Budget) {
           // Insert new budget only if name is not already taken

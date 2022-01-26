@@ -22,6 +22,7 @@ const AddBudgetModal = (props: Props) => {
     const budget = {
       name: fields.name,
       max: parseFloat(fields.max),
+      total: 0,
     };
     addBudget(budget);
 

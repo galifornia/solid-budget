@@ -53,7 +53,7 @@ const BudgetCard = (props: Props) => {
           >
             Add expense
           </Button>
-          <Button variant='outline-secondary'>View Expense</Button>
+          <Button variant='outline-secondary'>View Expenses</Button>
         </Stack>
       </Card.Body>
     </Card>

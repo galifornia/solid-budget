@@ -14,7 +14,7 @@ const App: Component = (props) => {
 
   const [state, { getBudgetExpenses }] = useBudgetProvider();
 
-  const openAddExpenseModal = (budgetId: string | undefined) => {
+  const openAddExpenseModal = (budgetId: string) => {
     setShowAddExpenseModal(true);
     setAddExpenseModalBudgetId(budgetId);
   };
@@ -45,16 +45,12 @@ const App: Component = (props) => {
         >
           <For each={state.budgets}>
             {(budget: Budget) => {
-              const amount = getBudgetExpenses(budget.id).reduce(
-                (total: number, expense: Expense) => total + expense.amount,
-                0
-              );
               return (
                 <BudgetCard
                   name={budget.name}
                   // gray
                   onAddExpenseClick={() => openAddExpenseModal(budget.id)}
-                  amount={amount}
+                  amount={budget.total}
                   max={budget.max}
                 />
               );
