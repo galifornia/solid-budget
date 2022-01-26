@@ -70,14 +70,19 @@ export const BudgetProvider = (props: Props) => {
           const budget = state.budgets.find((v) => v.id === expense.budgetId);
           if (!budget) return;
 
+          const index = state.budgets.findIndex(
+            (v) => v.id === expense.budgetId
+          );
           const updatedBudget = {
             ...budget,
             total: budget.total + expense.amount,
           };
-          const filteredBudgets = state.budgets.filter(
-            (b) => b.id !== expense.budgetId
-          );
-          const newBudgets = [...filteredBudgets, updatedBudget];
+
+          const newBudgets = [
+            ...state.budgets.slice(0, index),
+            updatedBudget,
+            ...state.budgets.slice(index + 1),
+          ];
           setState({ ...state, budgets: newBudgets, expenses: newExpenses });
         },
         addBudget(budget: Budget) {
