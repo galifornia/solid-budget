@@ -15,6 +15,7 @@ type BudgetStore = [
     addBudget?: (budget: Budget) => void;
     deleteBudget?: (id: string) => void;
     deleteExpense?: (id: string) => void;
+    setSelectedBudgetId?: (id: string) => void;
   }
 ];
 
@@ -43,6 +44,7 @@ type State = {
   expenses: Expense[];
   totalExpenses: number;
   totalBudget: number;
+  selectedBudgetId: string;
 };
 
 export function createLocalStore<T>(
@@ -58,12 +60,16 @@ export const BudgetProvider = (props: Props) => {
   const [state, setState] = createLocalStore<State>({
       budgets: [{ name: 'Uncategorized', total: 0, id: 'uncategorized' }],
       expenses: [],
+      selectedBudgetId: 'uncategorized',
       totalExpenses: 0,
       totalBudget: 0,
     }),
     store = [
       state,
       {
+        setSelectedBudgetId(budgetId: string) {
+          setState({ ...state, selectedBudgetId: budgetId });
+        },
         getBudgetExpenses(budgetId: string) {
           return state.expenses.filter(
             (expense) => expense.budgetId === budgetId

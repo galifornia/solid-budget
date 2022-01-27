@@ -7,6 +7,7 @@ type Props = {
   max?: number;
   gray?: boolean;
   onAddExpenseClick?: () => void;
+  onViewExpenseClick?: () => void;
 };
 
 const getProgressBarVariant = (amount: number, max: number) => {
@@ -37,6 +38,7 @@ const BudgetCard = (props: Props) => {
             )}
           </div>
         </Card.Title>
+
         {props.max && (
           <ProgressBar
             className='rounded-pill'
@@ -46,6 +48,7 @@ const BudgetCard = (props: Props) => {
             now={props.amount}
           />
         )}
+
         {!props.gray && (
           <Stack
             className='d-flex mt-4 justify-content-end'
@@ -62,7 +65,16 @@ const BudgetCard = (props: Props) => {
             >
               Add expense
             </Button>
-            <Button variant='outline-secondary'>View Expenses</Button>
+            <Button
+              variant='outline-secondary'
+              onClick={
+                props.onViewExpenseClick
+                  ? () => props.onViewExpenseClick()
+                  : undefined
+              }
+            >
+              View Expenses
+            </Button>
           </Stack>
         )}
       </Card.Body>

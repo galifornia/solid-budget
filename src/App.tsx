@@ -4,19 +4,24 @@ import { Component, createSignal, For } from 'solid-js';
 import AddBudgetModal from './components/AddBudgetModal';
 import AddExpenseModal from './components/AddExpenseModal';
 import BudgetCard from './components/BudgetCard';
-import { Budget, useBudgetProvider } from './context/BudgetProvider';
+import ViewExpensesModal from './components/ViewExpensesModal';
+import { Budget, Expense, useBudgetProvider } from './context/BudgetProvider';
 
 const App: Component = (props) => {
   const [showAddBudgetModal, setShowAddBudgetModal] = createSignal(false);
   const [showAddExpenseModal, setShowAddExpenseModal] = createSignal(false);
-  const [addExpenseModalBudgetId, setAddExpenseModalBudgetId] =
-    createSignal('');
+  const [showViewExpensesModal, setShowViewExpensesModal] = createSignal(false);
 
-  const [state] = useBudgetProvider();
+  const [state, { setSelectedBudgetId }] = useBudgetProvider();
 
   const openAddExpenseModal = (budgetId: string) => {
     setShowAddExpenseModal(true);
-    setAddExpenseModalBudgetId(budgetId);
+    setSelectedBudgetId(budgetId);
+  };
+
+  const openViewExpenseModal = (budgetId: string) => {
+    setShowViewExpensesModal(true);
+    setSelectedBudgetId(budgetId);
   };
 
   return (
@@ -53,6 +58,9 @@ const App: Component = (props) => {
                   amount={budget.total}
                   gray={budget.id === 'uncategorized'}
                   max={budget.max}
+                  onViewExpenseClick={() => {
+                    openViewExpenseModal(budget.id);
+                  }}
                 />
               );
             }}
@@ -75,11 +83,22 @@ const App: Component = (props) => {
       />
 
       <AddExpenseModal
-        defaultBudgetId={addExpenseModalBudgetId()}
         show={showAddExpenseModal()}
         handleClose={() => {
           setShowAddExpenseModal(false);
-          setAddExpenseModalBudgetId('');
+          setSelectedBudgetId('');
+        }}
+      />
+
+      <ViewExpensesModal
+        expenses={state.expenses.filter(
+          (expense: Expense) => expense.budgetId === state.selectedBudgetId
+        )}
+        budgetId={state.selectedBudgetId}
+        show={showViewExpensesModal()}
+        handleClose={() => {
+          setShowViewExpensesModal(false);
+          setSelectedBudgetId('');
         }}
       />
     </>

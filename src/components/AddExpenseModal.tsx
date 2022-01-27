@@ -6,7 +6,6 @@ import { Budget, useBudgetProvider } from '../context/BudgetProvider';
 
 type Props = {
   show: boolean;
-  defaultBudgetId: string;
   handleClose: () => void;
 };
 
@@ -22,7 +21,7 @@ const AddExpenseModal = (props: Props) => {
   const [fields, setFields] = createStore<FormType>({
     description: '',
     amount: 0,
-    budgetId: props.defaultBudgetId,
+    budgetId: '',
   });
 
   const handleSubmit = (ev: any) => {
@@ -31,7 +30,7 @@ const AddExpenseModal = (props: Props) => {
     const expense = {
       description: fields.description,
       budgetId:
-        fields.budgetId === '' ? props.defaultBudgetId : fields.budgetId,
+        fields.budgetId === '' ? state.selectedBudgetId : fields.budgetId,
       amount: parseFloat(fields.amount),
     };
     addExpense(expense);
@@ -42,7 +41,7 @@ const AddExpenseModal = (props: Props) => {
     setFields({
       description: '',
       amount: 0,
-      budgetId: props.defaultBudgetId,
+      budgetId: '',
     });
   };
 
@@ -78,7 +77,8 @@ const AddExpenseModal = (props: Props) => {
             onChange={(ev) => setFields('budgetId', ev.target.value)}
           >
             <Form.Label>BudgetId</Form.Label>
-            <Form.Select value={props.defaultBudgetId}>
+
+            <Form.Select value={state.selectedBudgetId}>
               <For each={state.budgets}>
                 {(budget: Budget) => {
                   return <option value={budget.id}>{budget.name}</option>;
