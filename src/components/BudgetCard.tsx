@@ -6,6 +6,7 @@ type Props = {
   amount: number;
   max?: number;
   gray?: boolean;
+  hideBtns?: boolean;
   onAddExpenseClick?: () => void;
   onViewExpenseClick?: () => void;
 };
@@ -39,7 +40,7 @@ const BudgetCard = (props: Props) => {
           </div>
         </Card.Title>
 
-        {props.max && (
+        {!props.hideBtns && (
           <ProgressBar
             className='rounded-pill'
             variant={getProgressBarVariant(props.amount, props.max)}
@@ -49,7 +50,7 @@ const BudgetCard = (props: Props) => {
           />
         )}
 
-        {!props.gray && (
+        {!props.hideBtns && (
           <Stack
             className='d-flex mt-4 justify-content-end'
             direction='horizontal'

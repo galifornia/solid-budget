@@ -1,9 +1,4 @@
-import {
-  createContext,
-  createEffect,
-  createSignal,
-  useContext,
-} from 'solid-js';
+import { createContext, createEffect, useContext } from 'solid-js';
 import { createStore, SetStoreFunction, Store } from 'solid-js/store';
 import { v4 as uuidV4 } from 'uuid';
 
@@ -117,17 +112,56 @@ export const BudgetProvider = (props: Props) => {
           });
         },
         deleteBudget(id: string) {
-          // !TODO: deal with uncategorized expenses
+          const budget = state.budgets.find((b) => b.id === id);
+          if (!budget) return;
+
+          const newExpenses = state.expenses.map((e) => {
+            return e.budgetId === id ? { ...e, budgetId: 'uncategorized' } : e;
+          });
+
+          const filteredBudgets = state.budgets.filter(
+            (budget) => budget.id !== id
+          );
+          const updatedBudgets = filteredBudgets.map((b: Budget) => {
+            return b.id === 'uncategorized'
+              ? { ...b, total: budget.total + b.total }
+              : b;
+          });
+
           setState({
             ...state,
-            budgets: state.budgets.filter((budget) => budget.id !== id),
+            budgets: updatedBudgets,
+            expenses: newExpenses,
+            totalBudget: state.totalBudget - (budget?.max || 0),
           });
         },
 
         deleteExpense(id: string) {
+          const expense = state.expenses.find((e) => e.id === id);
+          if (!expense) return;
+
+          const budget = state.budgets.find((v) => v.id === expense.budgetId);
+          if (!budget) return;
+
+          const index = state.budgets.findIndex(
+            (v) => v.id === expense.budgetId
+          );
+          const updatedBudget = {
+            ...budget,
+            total: budget.total - expense.amount,
+          };
+
+          const newBudgets = [
+            ...state.budgets.slice(0, index),
+            updatedBudget,
+            ...state.budgets.slice(index + 1),
+          ];
+
           setState({
             ...state,
             expenses: state.expenses.filter((expense) => expense.id !== id),
+            budgets: newBudgets,
+            totalExpenses: state.totalExpenses - expense.amount,
           });
         },
       },

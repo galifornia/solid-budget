@@ -1,10 +1,13 @@
-import { Button, Modal } from 'solid-bootstrap';
+import { Button, Modal, Stack } from 'solid-bootstrap';
 import { createEffect, For } from 'solid-js';
-import { Expense, useBudgetProvider } from '../context/BudgetProvider';
+import { Properties } from 'solid-js/web';
+import { Budget, Expense, useBudgetProvider } from '../context/BudgetProvider';
+import { currencyFormatter } from '../utils';
 
 type Props = {
   show: boolean;
   budgetId: string;
+  budgetName: string;
   expenses: Expense[];
   handleClose: () => void;
 };
@@ -16,16 +19,44 @@ const ViewExpensesModal = (props: Props) => {
   return (
     <Modal show={props.show} onHide={props.handleClose}>
       <Modal.Header>
-        <Modal.Title>View expenses</Modal.Title>
-        <Button variant='primary border-danger bg-danger'>Delete</Button>
+        <Stack direction='horizontal' gap={2}>
+          <Modal.Title>Expenses - {props.budgetName}</Modal.Title>
+          {'uncategorized' !== props.budgetId && (
+            <Button
+              variant='outline-danger'
+              onClick={() => {
+                deleteBudget(props.budgetId);
+                props.handleClose();
+              }}
+            >
+              Delete
+            </Button>
+          )}
+        </Stack>
       </Modal.Header>
 
       <Modal.Body>
-        <For each={props.expenses}>
-          {(expense: Expense) => {
-            return <div>{expense.description}</div>;
-          }}
-        </For>
+        <Stack direction='vertical' gap={2}>
+          <For each={props.expenses}>
+            {(expense: Expense) => {
+              return (
+                <Stack direction='horizontal' gap={2}>
+                  <div className='me-auto fs-4'>{expense.description}</div>
+                  <div className='ms-auto fs-5'>
+                    {currencyFormatter.format(expense.amount)}
+                  </div>
+                  <Button
+                    size='sm'
+                    variant='outline-danger'
+                    onClick={() => deleteExpense(expense.id)}
+                  >
+                    &times;
+                  </Button>
+                </Stack>
+              );
+            }}
+          </For>
+        </Stack>
       </Modal.Body>
     </Modal>
   );

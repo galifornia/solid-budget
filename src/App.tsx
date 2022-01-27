@@ -71,6 +71,7 @@ const App: Component = (props) => {
               name='Total expenses'
               amount={state.totalExpenses}
               gray
+              hideBtns={true}
               max={state.totalBudget}
             />
           )}
@@ -95,6 +96,10 @@ const App: Component = (props) => {
           (expense: Expense) => expense.budgetId === state.selectedBudgetId
         )}
         budgetId={state.selectedBudgetId}
+        budgetName={
+          state.budgets.find((b: Budget) => b.id === state.selectedBudgetId)
+            ?.name
+        }
         show={showViewExpensesModal()}
         handleClose={() => {
           setShowViewExpensesModal(false);
