@@ -37,6 +37,13 @@ const AddExpenseModal = (props: Props) => {
     addExpense(expense);
 
     props.handleClose();
+
+    // clear fields
+    setFields({
+      description: '',
+      amount: 0,
+      budgetId: props.defaultBudgetId,
+    });
   };
 
   return (

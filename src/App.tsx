@@ -1,5 +1,5 @@
 import { Button, Container, Stack } from 'solid-bootstrap';
-import { Component, createEffect, createSignal, For } from 'solid-js';
+import { Component, createSignal, For } from 'solid-js';
 
 import AddBudgetModal from './components/AddBudgetModal';
 import AddExpenseModal from './components/AddExpenseModal';
