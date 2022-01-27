@@ -20,6 +20,7 @@ const getProgressBarVariant = (amount: number, max: number) => {
 
 const BudgetCard = (props: Props) => {
   const classNames = [];
+  // !FIXME: make this reactive
   if (props.amount > props.max) {
     classNames.push('bg-danger', 'bg-opacity-10');
   } else if (props.gray) {
