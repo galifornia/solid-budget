@@ -4,7 +4,7 @@ import { Component, createSignal, For } from 'solid-js';
 import AddBudgetModal from './components/AddBudgetModal';
 import AddExpenseModal from './components/AddExpenseModal';
 import BudgetCard from './components/BudgetCard';
-import { Budget, Expense, useBudgetProvider } from './context/BudgetProvider';
+import { Budget, useBudgetProvider } from './context/BudgetProvider';
 
 const App: Component = (props) => {
   const [showAddBudgetModal, setShowAddBudgetModal] = createSignal(false);
@@ -12,7 +12,7 @@ const App: Component = (props) => {
   const [addExpenseModalBudgetId, setAddExpenseModalBudgetId] =
     createSignal('');
 
-  const [state, { getBudgetExpenses }] = useBudgetProvider();
+  const [state] = useBudgetProvider();
 
   const openAddExpenseModal = (budgetId: string) => {
     setShowAddExpenseModal(true);
@@ -29,7 +29,7 @@ const App: Component = (props) => {
           </Button>
           <Button
             variant='outline-primary'
-            onClick={() => openAddExpenseModal('')}
+            onClick={() => openAddExpenseModal('uncategorized')}
           >
             Add Expense
           </Button>
@@ -45,12 +45,13 @@ const App: Component = (props) => {
         >
           <For each={state.budgets}>
             {(budget: Budget) => {
+              if (budget.id === 'uncategorized' && budget.total === 0) return;
               return (
                 <BudgetCard
                   name={budget.name}
-                  // gray
                   onAddExpenseClick={() => openAddExpenseModal(budget.id)}
                   amount={budget.total}
+                  gray={budget.id === 'uncategorized'}
                   max={budget.max}
                 />
               );

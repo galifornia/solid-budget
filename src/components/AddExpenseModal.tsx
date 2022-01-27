@@ -79,7 +79,6 @@ const AddExpenseModal = (props: Props) => {
           >
             <Form.Label>BudgetId</Form.Label>
             <Form.Select value={props.defaultBudgetId}>
-              <option value='uncategorized'>Uncategorized</option>
               <For each={state.budgets}>
                 {(budget: Budget) => {
                   return <option value={budget.id}>{budget.name}</option>;

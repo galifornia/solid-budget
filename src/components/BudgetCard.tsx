@@ -4,7 +4,7 @@ import { currencyFormatter } from '../utils';
 type Props = {
   name: string;
   amount: number;
-  max: number;
+  max?: number;
   gray?: boolean;
   onAddExpenseClick: () => void;
 };
@@ -30,18 +30,22 @@ const BudgetCard = (props: Props) => {
           <div className='me-2'>{props.name}</div>
           <div className='d-flex align-items-baseline'>
             {currencyFormatter.format(props.amount)}
-            <span className='text-muted fs-6 ms-1'>
-              / {currencyFormatter.format(props.max)}
-            </span>
+            {props.max && (
+              <span className='text-muted fs-6 ms-1'>
+                / {currencyFormatter.format(props.max)}
+              </span>
+            )}
           </div>
         </Card.Title>
-        <ProgressBar
-          className='rounded-pill'
-          variant={getProgressBarVariant(props.amount, props.max)}
-          min={0}
-          max={props.max}
-          now={props.amount}
-        />
+        {props.max && (
+          <ProgressBar
+            className='rounded-pill'
+            variant={getProgressBarVariant(props.amount, props.max)}
+            min={0}
+            max={props.max}
+            now={props.amount}
+          />
+        )}
         <Stack
           className='d-flex mt-4 justify-content-end'
           direction='horizontal'

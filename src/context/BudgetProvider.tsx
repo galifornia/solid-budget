@@ -28,7 +28,7 @@ export type Budget = {
   id?: string;
   name: string;
   total: number;
-  max: number;
+  max?: number;
 };
 
 export type Expense = {
@@ -54,7 +54,7 @@ export function createLocalStore<T>(
 
 export const BudgetProvider = (props: Props) => {
   const [state, setState] = createLocalStore<State>({
-      budgets: [],
+      budgets: [{ name: 'Uncategorized', total: 0, id: 'uncategorized' }],
       expenses: [],
     }),
     store = [
@@ -68,6 +68,7 @@ export const BudgetProvider = (props: Props) => {
         addExpense(expense: Expense) {
           const newExpenses = [...state.expenses, { ...expense, id: uuidV4() }];
           const budget = state.budgets.find((v) => v.id === expense.budgetId);
+
           if (!budget) return;
 
           const index = state.budgets.findIndex(
@@ -91,7 +92,7 @@ export const BudgetProvider = (props: Props) => {
             return state;
           }
 
-          const newBugdets = [...state.budgets, { ...budget, id: uuidV4() }];
+          const newBugdets = [{ ...budget, id: uuidV4() }, ...state.budgets];
           setState({ ...state, budgets: newBugdets });
         },
         deleteBudget(id: string) {
