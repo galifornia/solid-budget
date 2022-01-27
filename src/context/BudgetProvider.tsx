@@ -41,6 +41,8 @@ export type Expense = {
 type State = {
   budgets: Budget[];
   expenses: Expense[];
+  totalExpenses: number;
+  totalBudget: number;
 };
 
 export function createLocalStore<T>(
@@ -56,6 +58,8 @@ export const BudgetProvider = (props: Props) => {
   const [state, setState] = createLocalStore<State>({
       budgets: [{ name: 'Uncategorized', total: 0, id: 'uncategorized' }],
       expenses: [],
+      totalExpenses: 0,
+      totalBudget: 0,
     }),
     store = [
       state,
@@ -84,16 +88,27 @@ export const BudgetProvider = (props: Props) => {
             updatedBudget,
             ...state.budgets.slice(index + 1),
           ];
-          setState({ ...state, budgets: newBudgets, expenses: newExpenses });
+
+          setState({
+            ...state,
+            budgets: newBudgets,
+            expenses: newExpenses,
+            totalExpenses: state.totalExpenses + expense.amount,
+          });
         },
         addBudget(budget: Budget) {
+          if (!budget.max) return;
           // Insert new budget only if name is not already taken
           if (state.budgets.find((b) => b.name === budget.name)) {
             return state;
           }
 
           const newBugdets = [{ ...budget, id: uuidV4() }, ...state.budgets];
-          setState({ ...state, budgets: newBugdets });
+          setState({
+            ...state,
+            budgets: newBugdets,
+            totalBudget: state.totalBudget + budget.max,
+          });
         },
         deleteBudget(id: string) {
           // !TODO: deal with uncategorized expenses

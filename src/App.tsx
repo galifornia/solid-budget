@@ -57,6 +57,15 @@ const App: Component = (props) => {
               );
             }}
           </For>
+
+          {state.totalExpenses && (
+            <BudgetCard
+              name='Total expenses'
+              amount={state.totalExpenses}
+              gray
+              max={state.totalBudget}
+            />
+          )}
         </div>
       </Container>
 
